@@ -30,8 +30,9 @@ const projects = [
   },
   {
     title: 'Producción Visual',
-    category: 'Reel',
-    video: '/videos/vid6.mp4',
+    category: 'Video de Youtube',
+    youtubeId: 'Gn3vmCDk9DQ',
+    youtubeUrl: 'https://youtube.com/shorts/Gn3vmCDk9DQ',
   },
   {
     title: 'Short Viral',
