@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion } from 'motion/react';
-import { Play } from 'lucide-react';
+import { Play, Youtube } from 'lucide-react';
 
 const projects = [
   {
@@ -25,17 +25,25 @@ const projects = [
   },
   {
     title: 'Reel Dinámico',
-    category: 'YouTube',
-    image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=2070&auto=format&fit=crop',
+    category: 'YouTube Short',
+    youtubeId: 'C-Mv0Iv2OkY',
+    youtubeUrl: 'https://youtube.com/shorts/C-Mv0Iv2OkY',
   },
   {
     title: 'Producción Comercial',
-    category: 'Comercial',
-    image: 'https://images.unsplash.com/photo-1536240478700-b869ad10e128?q=80&w=2070&auto=format&fit=crop',
+    category: 'YouTube Short',
+    youtubeId: 'Gn3vmCDk9DQ',
+    youtubeUrl: 'https://youtube.com/shorts/Gn3vmCDk9DQ',
   },
 ];
 
-type Project = { title: string; category: string; video?: string; image?: string };
+type Project = {
+  title: string;
+  category: string;
+  video?: string;
+  youtubeId?: string;
+  youtubeUrl?: string;
+};
 
 function VideoCard({ project, index }: { project: Project; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -52,17 +60,11 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
     }
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted"
-      onMouseEnter={project.video ? handleMouseEnter : undefined}
-      onMouseLeave={project.video ? handleMouseLeave : undefined}
-    >
-      {project.video ? (
+  const isYoutube = !!project.youtubeId;
+
+  const cardContent = (
+    <>
+      {project.video && (
         <video
           ref={videoRef}
           src={project.video}
@@ -72,21 +74,24 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
           preload="metadata"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-      ) : (
+      )}
+
+      {isYoutube && (
         <img
-          src={project.image}
+          src={`https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          referrerPolicy="no-referrer"
         />
       )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
-      {/* Play icon — visible when not hovering */}
       <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300">
         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white border border-white/20">
-          <Play fill="currentColor" className="ml-1 w-6 h-6" />
+          {isYoutube
+            ? <Youtube className="w-6 h-6" />
+            : <Play fill="currentColor" className="ml-1 w-6 h-6" />
+          }
         </div>
       </div>
 
@@ -94,6 +99,37 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
         <p className="text-primary text-sm font-medium mb-2">{project.category}</p>
         <h3 className="text-xl font-bold text-white">{project.title}</h3>
       </div>
+    </>
+  );
+
+  if (isYoutube) {
+    return (
+      <motion.a
+        href={project.youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1 }}
+        className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted block"
+      >
+        {cardContent}
+      </motion.a>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {cardContent}
     </motion.div>
   );
 }
