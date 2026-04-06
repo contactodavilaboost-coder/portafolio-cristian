@@ -73,29 +73,54 @@ export default function Hero() {
 
           {/* Photo */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
             className="relative flex-shrink-0"
           >
-            {/* Glow ring */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/40 to-purple-500/20 blur-2xl scale-110" />
-            {/* Border ring */}
-            <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full p-[2px] bg-gradient-to-br from-primary/60 to-purple-500/30">
-              <div className="w-full h-full rounded-full overflow-hidden bg-muted">
+            {/* Pulsing glow */}
+            <motion.div
+              animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.7, 0.4] }}
+              transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+              className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/50 to-purple-500/30 blur-3xl"
+            />
+
+            {/* Rotating gradient ring */}
+            <div className="relative w-72 h-72 md:w-[22rem] md:h-[22rem]">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
+                style={{ background: 'conic-gradient(from 0deg, #3b82f6, #a855f7, #06b6d4, #3b82f6)' }}
+                className="absolute inset-0 rounded-full"
+              />
+              {/* Mask to create border effect */}
+              <div className="absolute inset-[3px] rounded-full bg-[#0a0a0a]" />
+
+              {/* Photo */}
+              <div className="absolute inset-[3px] rounded-full overflow-hidden">
                 <img
                   src="/images/cristian.png"
                   alt="Cristian — Editor de Video"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
+
+              {/* Orbiting dot */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
+                className="absolute inset-0 rounded-full"
+              >
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-primary shadow-[0_0_12px_4px_rgba(59,130,246,0.8)]" />
+              </motion.div>
             </div>
+
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="absolute -bottom-2 -right-2 md:bottom-4 md:-right-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3"
+              transition={{ delay: 0.8 }}
+              className="absolute -bottom-2 -right-2 md:bottom-4 md:-right-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3"
             >
               <p className="text-xs text-muted-foreground mb-0.5">Proyectos completados</p>
               <p className="text-2xl font-bold text-white">50+</p>
