@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Videos grandes (>50MB) — hostear en YouTube/Vimeo
+public/videos/vid5.mp4
+public/videos/vid6.mp4

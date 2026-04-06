@@ -14,28 +14,30 @@ const projects = [
     video: '/videos/vid4.mp4',
   },
   {
-    title: 'Reel Dinámico',
-    category: 'YouTube',
-    video: '/videos/vid5.mp4',
-  },
-  {
     title: 'Proyecto Visual',
     category: 'Motion Graphics',
     video: '/videos/vid2.mp4',
-  },
-  {
-    title: 'Video Producción',
-    category: 'Comercial',
-    video: '/videos/vid6.mp4',
   },
   {
     title: 'Reel Profesional',
     category: 'Redes Sociales',
     video: '/videos/vid1.mp4',
   },
+  {
+    title: 'Reel Dinámico',
+    category: 'YouTube',
+    image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=2070&auto=format&fit=crop',
+  },
+  {
+    title: 'Producción Comercial',
+    category: 'Comercial',
+    image: 'https://images.unsplash.com/photo-1536240478700-b869ad10e128?q=80&w=2070&auto=format&fit=crop',
+  },
 ];
 
-function VideoCard({ project, index }: { project: typeof projects[0]; index: number }) {
+type Project = { title: string; category: string; video?: string; image?: string };
+
+function VideoCard({ project, index }: { project: Project; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleMouseEnter = () => {
@@ -57,18 +59,27 @@ function VideoCard({ project, index }: { project: typeof projects[0]; index: num
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={project.video ? handleMouseEnter : undefined}
+      onMouseLeave={project.video ? handleMouseLeave : undefined}
     >
-      <video
-        ref={videoRef}
-        src={project.video}
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
+      {project.video ? (
+        <video
+          ref={videoRef}
+          src={project.video}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      ) : (
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          referrerPolicy="no-referrer"
+        />
+      )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
