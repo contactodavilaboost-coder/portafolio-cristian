@@ -5,12 +5,12 @@ import { Play, Youtube } from 'lucide-react';
 const projects = [
   {
     title: 'El Dueño del Tiempo',
-    category: 'Contenido Inspiracional',
+    category: 'Reel',
     video: '/videos/vid3.mp4',
   },
   {
     title: 'Mindset & Crecimiento',
-    category: 'Redes Sociales',
+    category: 'Reel',
     video: '/videos/vid4.mp4',
   },
   {
@@ -20,18 +20,18 @@ const projects = [
   },
   {
     title: 'Reel Profesional',
-    category: 'Redes Sociales',
+    category: 'Reel',
     video: '/videos/vid1.mp4',
   },
   {
     title: 'Reel Dinámico',
-    category: 'YouTube Short',
+    category: 'Video de Youtube',
     youtubeId: 'C-Mv0Iv2OkY',
     youtubeUrl: 'https://youtube.com/shorts/C-Mv0Iv2OkY',
   },
   {
     title: 'Producción Comercial',
-    category: 'YouTube Short',
+    category: 'Video de Youtube',
     youtubeId: 'Gn3vmCDk9DQ',
     youtubeUrl: 'https://youtube.com/shorts/Gn3vmCDk9DQ',
   },
@@ -112,7 +112,7 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
-        className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted block"
+        className="group relative aspect-[9/16] rounded-2xl overflow-hidden cursor-pointer bg-muted block"
       >
         {cardContent}
       </motion.a>
@@ -125,7 +125,7 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer bg-muted"
+      className="group relative aspect-[9/16] rounded-2xl overflow-hidden cursor-pointer bg-muted"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
