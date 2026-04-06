@@ -14,6 +14,44 @@
   --color-accent: #2563eb;
 }
 
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fade-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+@keyframes spin-ring {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1);    }
+  50%       { opacity: 0.7; transform: scale(1.12); }
+}
+
+.anim-fade-up   { animation: fade-in-up   0.5s ease both; }
+.anim-fade-right{ animation: fade-in-right 0.5s ease both; }
+.anim-fade      { animation: fade-in      0.8s ease both; }
+.anim-scale-in  { animation: scale-in     0.7s ease both; }
+.anim-spin-ring { animation: spin-ring    6s linear infinite; }
+.anim-pulse-glow{ animation: pulse-glow   3.5s ease-in-out infinite; }
+.anim-d1 { animation-delay: 0.1s; }
+.anim-d2 { animation-delay: 0.2s; }
+.anim-d3 { animation-delay: 0.3s; }
+.anim-d4 { animation-delay: 0.4s; }
+.anim-d6 { animation-delay: 0.6s; }
+.anim-d8 { animation-delay: 0.8s; }
+.anim-d10{ animation-delay: 1.0s; }
+
 @layer base {
   html {
     scroll-behavior: smooth;

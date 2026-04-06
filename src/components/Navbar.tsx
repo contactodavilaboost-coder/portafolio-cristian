@@ -1,28 +1,27 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Play } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isPortfolio = location.pathname === '/portfolio';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const location = useLocation();
-  const isPortfolio = location.pathname === '/portfolio';
+  // Close mobile menu on route change
+  useEffect(() => { setIsMobileMenuOpen(false); }, [location.pathname]);
 
   const navLinks = [
-    { name: 'Inicio',      href: '/#home',      external: false },
-    { name: 'Servicios',   href: '/#services',  external: false },
-    { name: 'Portafolio',  href: '/portfolio',  external: false },
-    { name: 'Contacto',    href: '/#contact',   external: false },
+    { name: 'Inicio',     href: '/#home',     isRoute: false },
+    { name: 'Servicios',  href: '/#services', isRoute: false },
+    { name: 'Portafolio', href: '/portfolio', isRoute: true  },
+    { name: 'Contacto',   href: '/#contact',  isRoute: false },
   ];
 
   return (
@@ -41,12 +40,12 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            link.href.startsWith('/') && !link.href.startsWith('/#')
+          {navLinks.map((link) =>
+            link.isRoute
               ? <Link
                   key={link.name}
                   to={link.href}
-                  className={`text-sm font-medium transition-colors ${isPortfolio && link.name === 'Portafolio' ? 'text-white' : 'text-muted-foreground hover:text-white'}`}
+                  className={`text-sm font-medium transition-colors ${isPortfolio ? 'text-white' : 'text-muted-foreground hover:text-white'}`}
                 >
                   {link.name}
                 </Link>
@@ -57,7 +56,7 @@ export default function Navbar() {
                 >
                   {link.name}
                 </a>
-          ))}
+          )}
           <a
             href="/#contact"
             className="px-5 py-2.5 rounded-full bg-white text-black font-medium text-sm hover:bg-gray-200 transition-colors"
@@ -66,53 +65,48 @@ export default function Navbar() {
           </a>
         </nav>
 
-        {/* Mobile Toggle */}
+        {/* Mobile toggle */}
         <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Menú"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Nav */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-white/10 p-6 flex flex-col gap-4 md:hidden"
-          >
-            {navLinks.map((link) => (
-              link.href.startsWith('/') && !link.href.startsWith('/#')
-                ? <Link
-                    key={link.name}
-                    to={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-white transition-colors py-2"
-                  >
-                    {link.name}
-                  </Link>
-                : <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-lg font-medium text-muted-foreground hover:text-white transition-colors py-2"
-                  >
-                    {link.name}
-                  </a>
-            ))}
-            <a
-              href="/#contact"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="mt-4 px-6 py-3 rounded-full bg-white text-black font-medium text-center hover:bg-gray-200 transition-colors"
-            >
-              Hablemos
-            </a>
-          </motion.div>
+      {/* Mobile Nav — CSS transition, no motion */}
+      <div
+        className={`absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-white/10 p-6 flex flex-col gap-4 md:hidden transition-all duration-200 ${
+          isMobileMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
+        }`}
+      >
+        {navLinks.map((link) =>
+          link.isRoute
+            ? <Link
+                key={link.name}
+                to={link.href}
+                className="text-lg font-medium text-muted-foreground hover:text-white transition-colors py-2"
+              >
+                {link.name}
+              </Link>
+            : <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-lg font-medium text-muted-foreground hover:text-white transition-colors py-2"
+              >
+                {link.name}
+              </a>
         )}
-      </AnimatePresence>
+        <a
+          href="/#contact"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="mt-4 px-6 py-3 rounded-full bg-white text-black font-medium text-center hover:bg-gray-200 transition-colors"
+        >
+          Hablemos
+        </a>
+      </div>
     </header>
   );
 }
