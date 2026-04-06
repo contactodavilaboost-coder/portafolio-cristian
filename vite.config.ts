@@ -2,11 +2,24 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      ViteImageOptimizer({
+        jpg: { quality: 80 },
+        jpeg: { quality: 80 },
+        png: { quality: 80, compressionLevel: 8 },
+        webp: { lossless: false, quality: 80 },
+        svg: { plugins: [{ name: 'preset-default' }] },
+      }),
+      visualizer({ filename: 'dist/stats.html', open: false, gzipSize: true }),
+    ],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },

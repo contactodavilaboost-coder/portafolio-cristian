@@ -41,6 +41,7 @@ type Project = {
   title: string;
   category: string;
   video?: string;
+  poster?: string;
   youtubeId?: string;
   youtubeUrl?: string;
 };
@@ -71,7 +72,8 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
+          poster={project.poster ?? ''}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
       )}
@@ -80,6 +82,7 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
         <img
           src={`https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`}
           alt={project.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
       )}

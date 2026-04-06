@@ -101,6 +101,8 @@ export default function Hero() {
                 <img
                   src="/images/cristian.png"
                   alt="Cristian — Editor de Video"
+                  loading="eager"
+                  fetchPriority="high"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
