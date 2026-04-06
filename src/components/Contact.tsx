@@ -42,7 +42,9 @@ export default function Contact() {
               Enviar Email
             </a>
             <a
-              href="#"
+              href="https://wa.me/584123647936"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 text-white font-semibold border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 group"
             >
               <MessageSquare size={18} />
