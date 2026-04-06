@@ -25,15 +25,23 @@ const projects = [
   },
   {
     title: 'Reel Dinámico',
-    category: 'Video de Youtube',
-    youtubeId: 'C-Mv0Iv2OkY',
-    youtubeUrl: 'https://youtube.com/shorts/C-Mv0Iv2OkY',
+    category: 'Reel',
+    video: '/videos/vid5.mp4',
   },
   {
-    title: 'Producción Comercial',
-    category: 'Video de Youtube',
-    youtubeId: 'Gn3vmCDk9DQ',
-    youtubeUrl: 'https://youtube.com/shorts/Gn3vmCDk9DQ',
+    title: 'Producción Visual',
+    category: 'Reel',
+    video: '/videos/vid6.mp4',
+  },
+  {
+    title: 'Short Viral',
+    category: 'Reel',
+    video: '/videos/vid7.mp4',
+  },
+  {
+    title: 'Edición Dinámica',
+    category: 'Reel',
+    video: '/videos/vid8.mp4',
   },
 ];
 
