@@ -35,7 +35,7 @@ export default function Contact() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <a
-              href="mailto:hola@studioedit.com"
+              href="mailto:Cristianmorales120798@gmail.com"
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
             >
               <Mail size={18} />
