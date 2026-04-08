@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { Mail, MessageSquare, ArrowRight } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 
@@ -10,7 +11,7 @@ export default function Contact() {
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div
-          ref={ref as React.RefObject<HTMLDivElement>}
+          ref={ref as RefObject<HTMLDivElement>}
           className="max-w-4xl mx-auto bg-white/[0.02] border border-white/10 rounded-3xl p-8 md:p-16 text-center"
         >
           <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${inView ? 'anim-fade-up' : 'opacity-0'}`}>

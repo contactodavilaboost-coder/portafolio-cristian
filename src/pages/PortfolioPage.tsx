@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Youtube, X } from 'lucide-react';
 
@@ -172,12 +172,13 @@ export default function PortfolioPage() {
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filtered.map((project, index) => (
-              <VideoCard
-                key={project.title}
-                project={project}
-                index={index}
-                onClick={() => setActiveProject(project)}
-              />
+              <Fragment key={project.title}>
+                <VideoCard
+                  project={project}
+                  index={index}
+                  onClick={() => setActiveProject(project)}
+                />
+              </Fragment>
             ))}
           </AnimatePresence>
         </motion.div>

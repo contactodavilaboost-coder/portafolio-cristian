@@ -1,3 +1,4 @@
+import { Fragment, RefObject } from 'react';
 import { Scissors, Zap, MonitorPlay, Sparkles } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 
@@ -30,7 +31,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
   const { ref, inView } = useInView();
   return (
     <div
-      ref={ref as React.RefObject<HTMLDivElement>}
+      ref={ref as RefObject<HTMLDivElement>}
       className={`p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors group ${inView ? `anim-fade-up ${delays[index]}` : 'opacity-0'}`}
     >
       <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -49,7 +50,7 @@ export default function Services() {
     <section id="services" className="py-24 relative bg-black">
       <div className="container mx-auto px-6 md:px-12">
         <div
-          ref={headRef as React.RefObject<HTMLDivElement>}
+          ref={headRef as RefObject<HTMLDivElement>}
           className="mb-16 md:mb-24"
         >
           <h2 className={`text-3xl md:text-5xl font-bold mb-6 ${headInView ? 'anim-fade-up' : 'opacity-0'}`}>
@@ -62,7 +63,9 @@ export default function Services() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
-            <ServiceCard key={index} service={service} index={index} />
+            <Fragment key={index}>
+              <ServiceCard service={service} index={index} />
+            </Fragment>
           ))}
         </div>
       </div>
