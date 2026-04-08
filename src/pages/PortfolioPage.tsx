@@ -1,99 +1,69 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Youtube } from 'lucide-react';
+import { Youtube, X } from 'lucide-react';
 
 const ALL_PROJECTS = [
-  { title: 'El Dueño del Tiempo',   category: 'Reel',              video: '/videos/vid3.mp4' },
-  { title: 'Mindset & Crecimiento', category: 'Reel',              video: '/videos/vid4.mp4' },
-  { title: 'Proyecto Visual',       category: 'Motion Graphics',   video: '/videos/vid2.mp4' },
-  { title: 'Reel Profesional',      category: 'Reel',              video: '/videos/vid1.mp4' },
-  { title: 'Reel Dinámico',         category: 'Reel',              video: '/videos/vid5.mp4' },
-  { title: 'Short Viral',           category: 'Reel',              video: '/videos/vid7.mp4' },
-  { title: 'Edición Dinámica',      category: 'Reel',              video: '/videos/vid8.mp4' },
   {
-    title: 'Producción Visual',
-    category: 'Video de Youtube',
-    youtubeId: 'Gn3vmCDk9DQ',
-    youtubeUrl: 'https://youtube.com/shorts/Gn3vmCDk9DQ',
-  },
-  {
-    title: 'Reel Cristian',
-    category: 'Video de Youtube',
-    youtubeId: 'C-Mv0Iv2OkY',
-    youtubeUrl: 'https://youtube.com/shorts/C-Mv0Iv2OkY',
+    title: 'Una Ciudad Con 250.000 personas.. Y 1 solo semaforo funcionando. PUCON',
+    category: 'YouTube',
+    youtubeId: 'pX7OIf-zb0o',
+    isShort: false,
   },
 ];
 
-const FILTERS = ['Todos', 'Reel', 'Motion Graphics', 'Video de Youtube'] as const;
+const FILTERS = ['Todos', 'YouTube'] as const;
 type Filter = typeof FILTERS[number];
 
 type Project = typeof ALL_PROJECTS[0];
 
-function VideoCard({ project, index }: { project: Project; index: number }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isYoutube = 'youtubeId' in project && !!project.youtubeId;
+function YoutubeModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
 
-  const handleMouseEnter = () => { videoRef.current?.play(); };
-  const handleMouseLeave = () => {
-    const v = videoRef.current;
-    if (v) { v.pause(); v.currentTime = 0; }
-  };
+  const embedUrl = `https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&rel=0`;
 
-  const cardContent = (
-    <>
-      {!isYoutube && (project as { video?: string }).video && (
-        <video
-          ref={videoRef}
-          src={(project as { video: string }).video}
-          muted loop playsInline preload="none"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-      )}
-      {isYoutube && (
-        <img
-          src={`https://img.youtube.com/vi/${(project as { youtubeId: string }).youtubeId}/maxresdefault.jpg`}
-          alt={project.title}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-      )}
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
-
-      <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-        <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white border border-white/20">
-          {isYoutube
-            ? <Youtube className="w-5 h-5" />
-            : <Play fill="currentColor" className="ml-1 w-5 h-5" />
-          }
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-        <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-1">{project.category}</p>
-        <h3 className="text-base font-bold text-white leading-tight">{project.title}</h3>
-      </div>
-    </>
-  );
-
-  if (isYoutube) {
-    return (
-      <motion.a
-        layout
-        href={(project as { youtubeUrl: string }).youtubeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.25, delay: index * 0.05 }}
-        className="group relative aspect-[9/16] rounded-2xl overflow-hidden cursor-pointer bg-muted block"
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className={`relative w-full mx-4 ${project.isShort ? 'max-w-sm' : 'max-w-4xl'}`}
+        onClick={(e) => e.stopPropagation()}
       >
-        {cardContent}
-      </motion.a>
-    );
-  }
+        <button
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        <div
+          className="relative w-full"
+          style={{ paddingBottom: project.isShort ? '177.78%' : '56.25%' }}
+        >
+          <iframe
+            src={embedUrl}
+            className="absolute inset-0 w-full h-full rounded-2xl"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
+function VideoCard({ project, index, onClick }: { project: Project; index: number; onClick: () => void }) {
   return (
     <motion.div
       layout
@@ -101,17 +71,38 @@ function VideoCard({ project, index }: { project: Project; index: number }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.25, delay: index * 0.05 }}
-      className="group relative aspect-[9/16] rounded-2xl overflow-hidden cursor-pointer bg-muted"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      className={`group relative rounded-2xl overflow-hidden cursor-pointer bg-zinc-900 ${project.isShort ? 'aspect-[9/16]' : 'aspect-video'}`}
     >
-      {cardContent}
+      <img
+        src={`https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`}
+        alt={project.title}
+        loading="lazy"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${project.youtubeId}/0.jpg`;
+        }}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white border border-white/20 group-hover:bg-white/20 transition-colors">
+          <Youtube className="w-5 h-5" />
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-1">{project.category}</p>
+        <h3 className="text-base font-bold text-white leading-tight">{project.title}</h3>
+      </div>
     </motion.div>
   );
 }
 
 export default function PortfolioPage() {
   const [active, setActive] = useState<Filter>('Todos');
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
 
   const filtered = active === 'Todos'
     ? ALL_PROJECTS
@@ -121,7 +112,6 @@ export default function PortfolioPage() {
     <main className="min-h-screen bg-[#050505] pt-28 pb-24">
       <div className="container mx-auto px-6 md:px-12">
 
-        {/* Header */}
         <div className="mb-12 text-center">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -148,7 +138,6 @@ export default function PortfolioPage() {
           </motion.p>
         </div>
 
-        {/* Filter tabs */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,16 +169,25 @@ export default function PortfolioPage() {
           ))}
         </motion.div>
 
-        {/* Grid */}
-        <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filtered.map((project, index) => (
-              <VideoCard key={project.title} project={project} index={index} />
+              <VideoCard
+                key={project.title}
+                project={project}
+                index={index}
+                onClick={() => setActiveProject(project)}
+              />
             ))}
           </AnimatePresence>
         </motion.div>
-
       </div>
+
+      <AnimatePresence>
+        {activeProject && (
+          <YoutubeModal project={activeProject} onClose={() => setActiveProject(null)} />
+        )}
+      </AnimatePresence>
     </main>
   );
 }
