@@ -109,12 +109,9 @@ export default function Portfolio() {
               className={`group relative rounded-2xl overflow-hidden cursor-pointer bg-zinc-900 ${project.isShort ? 'aspect-[9/16]' : 'aspect-video'}`}
             >
               <img
-                src={`https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`}
+                src={`https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`}
                 alt={project.title}
                 loading="lazy"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
-                }}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
 
