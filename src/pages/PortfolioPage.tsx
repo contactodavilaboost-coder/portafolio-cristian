@@ -1,20 +1,9 @@
 import { useState, useEffect, Fragment } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Youtube, X } from 'lucide-react';
+import { Youtube, X, Loader2 } from 'lucide-react';
+import { useVideos, type Video } from '../hooks/useVideos';
 
-const ALL_PROJECTS = [
-  {
-    title: 'Una Ciudad Con 250.000 personas.. Y 1 solo semaforo funcionando. PUCON',
-    category: 'YouTube',
-    youtubeId: 'pX7OIf-zb0o',
-    isShort: false,
-  },
-];
-
-const FILTERS = ['Todos', 'YouTube'] as const;
-type Filter = typeof FILTERS[number];
-
-type Project = typeof ALL_PROJECTS[0];
+type Project = Video;
 
 function YoutubeModal({ project, onClose }: { project: Project; onClose: () => void }) {
   useEffect(() => {
@@ -22,9 +11,7 @@ function YoutubeModal({ project, onClose }: { project: Project; onClose: () => v
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
-
   const embedUrl = `https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&rel=0`;
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -80,15 +67,12 @@ function VideoCard({ project, index, onClick }: { project: Project; index: numbe
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
-
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white border border-white/20 group-hover:bg-white/20 transition-colors">
           <Youtube className="w-5 h-5" />
         </div>
       </div>
-
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-1">{project.category}</p>
         <h3 className="text-base font-bold text-white leading-tight">{project.title}</h3>
@@ -98,17 +82,21 @@ function VideoCard({ project, index, onClick }: { project: Project; index: numbe
 }
 
 export default function PortfolioPage() {
-  const [active, setActive] = useState<Filter>('Todos');
+  const { videos, loading, error } = useVideos();
+  const [active, setActive] = useState('Todos');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
+  // Genera filtros dinamicamente segun las categorias que existan en Sanity
+  const categories = [...new Set(videos.map((v) => v.category))];
+  const FILTERS = ['Todos', ...categories];
+
   const filtered = active === 'Todos'
-    ? ALL_PROJECTS
-    : ALL_PROJECTS.filter(p => p.category === active);
+    ? videos
+    : videos.filter((p) => p.category === active);
 
   return (
     <main className="min-h-screen bg-[#050505] pt-28 pb-24">
       <div className="container mx-auto px-6 md:px-12">
-
         <div className="mb-12 text-center">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -135,50 +123,69 @@ export default function PortfolioPage() {
           </motion.p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-14"
-        >
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              onClick={() => setActive(f)}
-              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                active === f
-                  ? 'text-black'
-                  : 'text-muted-foreground bg-white/5 border border-white/10 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {active === f && (
-                <motion.span
-                  layoutId="pill"
-                  className="absolute inset-0 rounded-full bg-white"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">{f}</span>
-              <span className={`relative z-10 ml-2 text-xs ${active === f ? 'text-black/50' : 'text-muted-foreground'}`}>
-                {f === 'Todos' ? ALL_PROJECTS.length : ALL_PROJECTS.filter(p => p.category === f).length}
-              </span>
-            </button>
-          ))}
-        </motion.div>
+        {/* Loading state */}
+        {loading && (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-8 h-8 text-white/40 animate-spin" />
+          </div>
+        )}
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((project, index) => (
-              <Fragment key={project.title}>
-                <VideoCard
-                  project={project}
-                  index={index}
-                  onClick={() => setActiveProject(project)}
-                />
-              </Fragment>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* Error state */}
+        {error && (
+          <div className="text-center py-20">
+            <p className="text-red-400">{error}</p>
+          </div>
+        )}
+
+        {/* Content */}
+        {!loading && !error && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="flex flex-wrap items-center justify-center gap-3 mb-14"
+            >
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setActive(f)}
+                  className={`relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    active === f
+                      ? 'text-black'
+                      : 'text-muted-foreground bg-white/5 border border-white/10 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  {active === f && (
+                    <motion.span
+                      layoutId="pill"
+                      className="absolute inset-0 rounded-full bg-white"
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{f}</span>
+                  <span className={`relative z-10 ml-2 text-xs ${active === f ? 'text-black/50' : 'text-muted-foreground'}`}>
+                    {f === 'Todos' ? videos.length : videos.filter((p) => p.category === f).length}
+                  </span>
+                </button>
+              ))}
+            </motion.div>
+
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence mode="popLayout">
+                {filtered.map((project, index) => (
+                  <Fragment key={project._id}>
+                    <VideoCard
+                      project={project}
+                      index={index}
+                      onClick={() => setActiveProject(project)}
+                    />
+                  </Fragment>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </>
+        )}
       </div>
 
       <AnimatePresence>

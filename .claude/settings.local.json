@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where git:*)",
+      "Bash(where gh:*)",
+      "Bash(rm:*)",
+      "WebFetch(domain:studioeditcristian.netlify.app)",
+      "Bash(node -e ':*)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:portafolio-cristian-taupe.vercel.app)",
+      "Bash(npm run:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}
