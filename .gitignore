@@ -1,12 +1,8 @@
-node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
-
-# Videos grandes (>50MB) — hostear en YouTube/Vimeo
-public/videos/vid5.mp4
-public/videos/vid6.mp4
+node_modules
+dist
+*.mp4
+*.avi
+*.mov
+*.mkv
+.env
+.env.local
